@@ -1,6 +1,5 @@
 # redux-saga-race-cancel
 
-=======
 Redux saga race effects, cancel propagation and composition examples.
 POC of redux modules encapsulated in "saga" interface
 
