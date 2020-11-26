@@ -23,19 +23,17 @@ export function* editDashboardWorker() {
         const dashboardId = yield select(dashboardIdSelector);
         const result = yield race({
             data: call(loadEditDataWorker, dashboardId),
-            switchDashboard: take("SWITCH_DASHBOARD"),
+            initializeDashboard: take("INITIALIZE_DASHBOARD"),
         });
 
         // Dashboard switched during the load, load again.
-        if (result.switchDashboard) {
+        if (result.initializeDashboard) {
             continue;
         }
 
         try {
-            // Dashboard edit data loaded, wait for switching the dashboard, or canceling this worker
-            yield take("SWITCH_DASHBOARD");
+            yield take("INITIALIZE_DASHBOARD");
         } finally {
-            // Worker canceled, perform cleanup
             if (yield cancelled()) {
                 yield call(resetDashboardEditData);
             }
@@ -44,18 +42,13 @@ export function* editDashboardWorker() {
 }
 
 export function* editDashboard() {
-    // Enter edit mode, until cancel event is fired
     yield race({
         data: call(editDashboardWorker),
-        cancelEdit: take("CANCEL_EDIT"),
+        cancelEdit: take("LEAVE_EDIT_MODE"),
     });
 }
 
 export function* dashboardWorker() {
-    yield takeLatest(
-        ["LOAD_DASHBOARD", "SWITCH_DASHBOARD"],
-        loadDashboardViewData
-    );
-
-    yield takeLatest("EDIT_DASHBOARD", editDashboard);
+    yield takeLatest("INITIALIZE_DASHBOARD", loadDashboardViewData);
+    yield takeLatest("ENTER_EDIT_MODE", editDashboard);
 }

@@ -6,11 +6,7 @@ import {
     SagaReturnType,
     cancelled,
 } from "redux-saga/effects";
-import {
-    createViewDataResetAction,
-    createViewDataRequestAction,
-    createViewDataSuccessAction,
-} from "../actions";
+import { resetViewData, requestViewData, receiveViewData } from "../actions";
 
 export function* getViewData(dashboardId: string): SagaIterator<string> {
     yield delay(2000);
@@ -18,17 +14,17 @@ export function* getViewData(dashboardId: string): SagaIterator<string> {
 }
 
 export function* loadViewDataWorker(dashboardId: string) {
-    yield put(createViewDataRequestAction());
+    yield put(requestViewData());
 
     try {
         const data: SagaReturnType<typeof getViewData> = yield call(
             getViewData,
             dashboardId
         );
-        yield put(createViewDataSuccessAction(data));
+        yield put(receiveViewData(data));
     } finally {
         if (yield cancelled()) {
-            yield put(createViewDataResetAction());
+            yield put(resetViewData());
         }
     }
 }

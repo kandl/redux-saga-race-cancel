@@ -6,11 +6,7 @@ import {
     SagaReturnType,
     cancelled,
 } from "redux-saga/effects";
-import {
-    createEditDataResetAction,
-    createEditDataRequestAction,
-    createEditDataSuccessAction,
-} from "../actions";
+import { resetEditData, requestEditData, receiveEditData } from "../actions";
 
 export function* getEditData(dashboardId: string): SagaIterator<string> {
     yield delay(2000);
@@ -18,21 +14,21 @@ export function* getEditData(dashboardId: string): SagaIterator<string> {
 }
 
 export function* loadEditDataWorker(dashboardId: string) {
-    yield put(createEditDataRequestAction());
+    yield put(requestEditData());
 
     try {
         const data: SagaReturnType<typeof getEditData> = yield call(
             getEditData,
             dashboardId
         );
-        yield put(createEditDataSuccessAction(data));
+        yield put(receiveEditData(data));
     } finally {
         if (yield cancelled()) {
-            yield put(createEditDataResetAction());
+            yield put(resetEditData());
         }
     }
 }
 
 export function* resetDashboardEditData() {
-    yield put(createEditDataResetAction());
+    yield put(resetEditData());
 }

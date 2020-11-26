@@ -19,10 +19,9 @@ import {
     dashboardEditDataSelector,
 } from "./redux/selectors";
 import {
-    createCancelEditAction,
-    createEditDashboardAction,
-    createLoadDashboardAction,
-    createSwitchDashboardAction,
+    leaveDashboardEditMode,
+    enterDashboardEditMode,
+    initializeDashboard,
 } from "./redux/actions";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,13 +43,13 @@ export const App: React.FC = () => {
     const editData = useSelector(dashboardEditDataSelector);
     const dashboardId = useSelector(dashboardIdSelector);
 
-    const onEditButtonClick = () => dispatch(createEditDashboardAction());
-    const onCancelButtonClick = () => dispatch(createCancelEditAction());
+    const onEditButtonClick = () => dispatch(enterDashboardEditMode());
+    const onCancelButtonClick = () => dispatch(leaveDashboardEditMode());
     const switchDashboard = (dashboardId: string) =>
-        dispatch(createSwitchDashboardAction(dashboardId));
+        dispatch(initializeDashboard(dashboardId));
 
     useEffect(() => {
-        dispatch(createLoadDashboardAction());
+        dispatch(initializeDashboard(dashboardId));
     }, []);
 
     return (

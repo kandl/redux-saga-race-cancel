@@ -1,20 +1,19 @@
 import { Data } from "./types";
 
 export type ActionKey =
-    | "LOAD_DASHBOARD"
-    | "EDIT_DASHBOARD"
-    | "CANCEL_EDIT"
-    | "SWITCH_DASHBOARD"
+    | "INITIALIZE_DASHBOARD"
+    | "ENTER_DASHBOARD_EDIT_MODE"
+    | "LEAVE_DASHBOARD_EDIT_MODE"
 
     // View module
-    | "VIEW_DATA_REQUEST"
-    | "VIEW_DATA_SUCCESS"
-    | "VIEW_DATA_RESET"
+    | "REQUEST_VIEW_DATA"
+    | "RECEIVE_VIEW_DATA"
+    | "RESET_VIEW_DATA"
 
     // Edit module
-    | "EDIT_DATA_REQUEST"
-    | "EDIT_DATA_SUCCESS"
-    | "EDIT_DATA_RESET";
+    | "REQUEST_EDIT_DATA"
+    | "RECEIVE_EDIT_DATA"
+    | "RESET_EDIT_DATA";
 
 export type Action<T extends ActionKey, P> = {
     type: T;
@@ -31,43 +30,37 @@ export const createAction = <T extends ActionKey, P>(
 
 export type Actions = ReturnType<
     // Dashboard module
-    | typeof createLoadDashboardAction
-    | typeof createEditDashboardAction
-    | typeof createCancelEditAction
-    | typeof createSwitchDashboardAction
+    | typeof enterDashboardEditMode
+    | typeof leaveDashboardEditMode
+    | typeof initializeDashboard
 
     // View module
-    | typeof createViewDataRequestAction
-    | typeof createViewDataSuccessAction
-    | typeof createViewDataResetAction
+    | typeof requestViewData
+    | typeof receiveViewData
+    | typeof resetViewData
 
     // Edit module
-    | typeof createEditDataRequestAction
-    | typeof createEditDataSuccessAction
-    | typeof createEditDataResetAction
+    | typeof requestEditData
+    | typeof receiveEditData
+    | typeof resetEditData
 >;
 
 // Dashboard module
-export const createLoadDashboardAction = () =>
-    createAction("LOAD_DASHBOARD", {});
-export const createEditDashboardAction = () =>
-    createAction("EDIT_DASHBOARD", {});
-export const createCancelEditAction = () => createAction("CANCEL_EDIT", {});
-export const createSwitchDashboardAction = (dashboardId: string) =>
-    createAction("SWITCH_DASHBOARD", { dashboardId });
+export const enterDashboardEditMode = () =>
+    createAction("ENTER_DASHBOARD_EDIT_MODE", {});
+export const leaveDashboardEditMode = () =>
+    createAction("LEAVE_DASHBOARD_EDIT_MODE", {});
+export const initializeDashboard = (dashboardId: string) =>
+    createAction("INITIALIZE_DASHBOARD", { dashboardId });
 
 // View module
-export const createViewDataRequestAction = () =>
-    createAction("VIEW_DATA_REQUEST", {});
-export const createViewDataSuccessAction = (data: Data) =>
-    createAction("VIEW_DATA_SUCCESS", { data });
-export const createViewDataResetAction = () =>
-    createAction("VIEW_DATA_RESET", {});
+export const requestViewData = () => createAction("REQUEST_VIEW_DATA", {});
+export const receiveViewData = (data: Data) =>
+    createAction("RECEIVE_VIEW_DATA", { data });
+export const resetViewData = () => createAction("RESET_VIEW_DATA", {});
 
 // Edit module
-export const createEditDataRequestAction = () =>
-    createAction("EDIT_DATA_REQUEST", {});
-export const createEditDataSuccessAction = (data: Data) =>
-    createAction("EDIT_DATA_SUCCESS", { data });
-export const createEditDataResetAction = () =>
-    createAction("EDIT_DATA_RESET", {});
+export const requestEditData = () => createAction("REQUEST_EDIT_DATA", {});
+export const receiveEditData = (data: Data) =>
+    createAction("RECEIVE_EDIT_DATA", { data });
+export const resetEditData = () => createAction("RESET_EDIT_DATA", {});
